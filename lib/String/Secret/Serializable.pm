@@ -14,7 +14,7 @@ sub STORABLE_freeze {
 }
 sub STORABLE_thaw {
     my ($self, $cloning, $raw) = @_;
-    return $self->SUPER::STORABLE_thaw(1, $raw);
+    return $self->SUPER::STORABLE_thaw(1, $raw); # force cloging to set REAL secret
 }
 
 # for JSON modules

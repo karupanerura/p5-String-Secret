@@ -3,6 +3,8 @@ use 5.008001;
 use strict;
 use warnings;
 
+use Scalar::Util qw/refaddr/;
+
 our $VERSION = "0.01";
 
 use overload
@@ -10,15 +12,21 @@ use overload
     fallback => 1;
 
 our $DISABLE_MASK = 0;
+our $MASKED_STRING = '*' x 8;
+
+my %SECRETS;
 
 sub new {
     my ($class, $secret) = @_;
-    bless [$secret], $class;
+    my $masked = $MASKED_STRING;
+    my $self = bless \$masked, $class;
+    $SECRETS{refaddr($self)} = $secret;
+    return $self;
 }
 
 sub from_serializable { $_[0]->new($_[1]->unwrap) }
 
-sub unwrap { $_[0]->[0] }
+sub unwrap { $SECRETS{refaddr($_[0])} }
 
 sub to_serializable {
     require String::Secret::Serializable;
@@ -27,7 +35,7 @@ sub to_serializable {
 
 sub to_string {
     return shift->unwrap if $DISABLE_MASK;
-    return '*' x 8;
+    return $MASKED_STRING;
 }
 
 # for Storable
@@ -39,7 +47,7 @@ sub STORABLE_freeze {
 sub STORABLE_thaw {
     my ($self, $cloning, $masked) = @_;
     if ($cloning) {
-        $self->[0] = $masked; # $masked is unwrapped value
+        $SECRETS{refaddr($self)} = $masked; # $masked is unwrapped value
         return $self;
     }
 
@@ -60,6 +68,8 @@ sub THAW {
 
 # for Data::Clone
 sub clone { shift } # immutable
+
+sub DESTROY { delete $SECRETS{refaddr($_[0])} }
 
 1;
 __END__
