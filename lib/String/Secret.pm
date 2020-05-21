@@ -76,6 +76,8 @@ __END__
 
 =encoding utf-8
 
+=for stopwords serializable
+
 =head1 NAME
 
 String::Secret - secret string wrapper to mask secret from logger
