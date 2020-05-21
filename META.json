@@ -58,6 +58,17 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/karupanerura/String-Secret/issues"
+      },
+      "homepage" : "https://github.com/karupanerura/String-Secret",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/karupanerura/String-Secret.git",
+         "web" : "https://github.com/karupanerura/String-Secret"
+      }
+   },
    "version" : "0.01",
    "x_serialization_backend" : "JSON::PP version 4.04",
    "x_static_install" : 1
